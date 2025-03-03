@@ -1,0 +1,55 @@
+# Training configuration for VST-Tiny on UCF101
+name: vst_tiny_ucf101
+description: Video
+Swin
+Transformer
+Tiny
+for UCF101 action recognition
+
+# Model configuration
+model:
+name: tiny  # One of: tiny, small, base, large
+num_classes: 101
+use_custom_head: true
+dropout: 0.5
+activation: gelu
+pretrained: false
+pretrained_path: null
+freeze_backbone: false
+
+# Dataset configuration
+dataset:
+name: ucf101
+data_dir: data / ucf101
+clip_length: 16
+frame_stride: 2
+spatial_size: 224
+
+# Training configuration
+training:
+# Basic parameters
+epochs: 50
+batch_size: 16
+val_batch_size: 16
+workers: 8
+device: cuda
+seed: 42
+amp: true
+
+# Optimization
+optimizer: adamw
+lr: 1e-4
+min_lr: 1e-6
+weight_decay: 0.05
+clip_grad_norm: 1.0
+label_smoothing: 0.1
+
+# Learning rate scheduler
+lr_scheduler: cosine
+lr_milestones: [0.6, 0.8]  # As fraction of epochs
+lr_gamma: 0.1
+
+# Output and logging
+output_dir: output / vst_tiny_ucf101
+print_freq: 10
+save_freq: 1
