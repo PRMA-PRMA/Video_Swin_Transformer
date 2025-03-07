@@ -230,7 +230,7 @@ class WindowAttention3D(nn.Module):
         Initialize 3D relative position bias table.
         This method should be explicitly called after model weight loading.
         """
-        print(f"Initializing 3D position bias for window size {self.window_size} with {self.num_heads} heads")
+        #print(f"Initializing 3D position bias for window size {self.window_size} with {self.num_heads} heads")
         # Get window size
         window_d, window_h, window_w = self.window_size
         num_heads = self.num_heads
@@ -273,7 +273,7 @@ class WindowAttention3D(nn.Module):
         with torch.no_grad():
             self.relative_position_bias_table.copy_(table_3d)
 
-        print(f"Position bias table initialized with shape: {self.relative_position_bias_table.shape}")
+        #print(f"Position bias table initialized with shape: {self.relative_position_bias_table.shape}")
 
     def forward(self, x: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         """ Forward function.
@@ -1055,6 +1055,7 @@ class VideoSwinTransformer(nn.Module):
                 # Add to new state dict
                 new_state_dict[new_k] = v
 
+            '''
             # Print key mapping information for debugging
             print(f"Key mapping examples:")
             sample_keys = list(state_dict.keys())[:5]
@@ -1068,6 +1069,7 @@ class VideoSwinTransformer(nn.Module):
                     elif mapped_k == 'cls_head.fc_cls.bias':
                         mapped_k = 'head.bias'
                 print(f"  {k} -> {mapped_k}")
+            '''
 
             # Check if weights are already 3D (5D tensor for conv) or need inflation from 2D
             is_3d_weights = False
@@ -1101,7 +1103,7 @@ class VideoSwinTransformer(nn.Module):
             print(f"Loaded {len(new_state_dict)}/{len(self.state_dict())} parameters")
 
             # After loading weights, make sure to initialize position bias for all attention blocks
-            print("Initializing custom 3D relative position bias tables...")
+            #print("Initializing custom 3D relative position bias tables...")
             self._init_attention_position_bias()
 
         except Exception as e:
@@ -1114,7 +1116,7 @@ class VideoSwinTransformer(nn.Module):
         # Initialize position bias for all attention layers
         for i, layer in enumerate(self.layers):
             for j, block in enumerate(layer.blocks):
-                print(f"Initializing position bias for layer {i} block {j}")
+                #print(f"Initializing position bias for layer {i} block {j}")
                 # Trigger the custom initialization in WindowAttention3D
                 if hasattr(block.attn, 'initialize_3d_position_bias'):
                     block.attn.initialize_3d_position_bias()
